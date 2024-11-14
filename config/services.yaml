@@ -1,0 +1,46 @@
+services:
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\EventListener\ElasticsearchListener:
+    arguments:
+      $esConnect: '@Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchConnectService'
+      $esMapping: '@Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchMappingService'
+    tags:
+      - { name: doctrine.event_listener, event: postPersist }
+      - { name: doctrine.event_listener, event: postUpdate }
+      - { name: doctrine.event_listener, event: preRemove }
+
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Command\ShowElasticsearchEntitiesCommand:
+    arguments:
+      $entityManager: '@doctrine.orm.entity_manager'
+      $esMapping: '@Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchMappingService'
+    tags:
+      - { name: 'console.command' }
+
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Command\ImportDataToElasticsearchCommand:
+    arguments:
+      $entityManager: '@doctrine.orm.entity_manager'
+      $esConnect: '@Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchConnectService'
+      $esMapping: '@Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchMappingService'
+    tags:
+      - { name: 'console.command' }
+
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchConnectService:
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticsearchMappingService:
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticSearchRequestInfoService:
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ContainerService:
+    arguments:
+      $container: '@service_container'
+
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Filter\MatchElasticsearchFilter:
+    public: true
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Filter\PaginationElasticsearchFilter:
+    public: true
+    arguments:
+      $requestInfoService: '@Ggbb\ApiPlatformElasticsearchIntegrationBundle\Service\ElasticSearchRequestInfoService'
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Filter\RangeElasticsearchFilter:
+    public: true
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Filter\SortElasticsearchFilter:
+    public: true
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Filter\TermElasticsearchFilter:
+    public: true
+  Ggbb\ApiPlatformElasticsearchIntegrationBundle\Filter\TermBoolElasticsearchFilter:
+    public: true
